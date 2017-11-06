@@ -1,0 +1,16 @@
+% Statistical uncertainties only.
+% Uncertainties have not been adjusted using the simulations
+% described in the appendix of Fulton et al. (2017).
+% They are likely underestimated by a factor of 2-4.
+% G stars only: 5300 < Teff < 6000 K
+
+
+0.0128	0.0127	0.0296	0.0150	   NaN	
+0.0079	0.0136	0.0140	0.0281	0.0320	
+0.0073	0.0140	0.0191	0.0210	0.0291	
+0.0069	0.0115	0.0171	0.0254	0.0263	
+0.0024	0.0037	0.0081	0.0112	0.0115	
+0.0021	0.0029	   NaN	0.0077	   NaN	
+   NaN	0.0031	0.0050	   NaN	0.0115	
+0.0016	   NaN	   NaN	0.0056	0.0110	
+   NaN	   NaN	   NaN	   NaN	   NaN	

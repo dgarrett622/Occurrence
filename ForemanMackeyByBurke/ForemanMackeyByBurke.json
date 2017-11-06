@@ -1,0 +1,35 @@
+{
+  "RpData":{
+  "range": [0.67,1,1.5,2.2,3.4,5.1,7.6,11,17],
+  "input": "true",
+  "unit": "earthRad",
+  "scale": "log"
+  },
+  "MsiniData":{
+    "range": [],
+    "input": "false",
+    "unit": "M_earth",
+    "scale": "derived"
+  },
+  "PData":{
+    "range": [10,20,40,80,160,320,640],
+    "input": "true",
+    "unit": "day",
+    "scale": "log"
+  },
+  "aData":{
+    "range": [],
+    "input": "false",
+    "unit": "AU",
+    "scale": "derived"
+  },
+  "starData":{
+    "type": ["GK"],
+    "Teff": [[4100,6100]]
+  },
+  "fname": {
+  "name": "DressingByBurke",
+  "title": "DressingByBurke",
+  "suffix": "_m.txt"
+  }
+}
