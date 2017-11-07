@@ -293,7 +293,7 @@ class EtaBase(object):
         plt.rc('text', usetex=True)
         plt.rc('font', family='serif')
         fig, ax = plt.subplots(figsize=(12,8))
-        ax.set_title('{} Star Occurrence Rate [\%] From {}'.format(typekey, self.fname['name']),fontsize=16)
+        ax.set_title('{} Star Occurrence Rate [\%] from {}'.format(typekey, self.fname['title']),fontsize=16)
         ax.set_xlabel('Orbital Period [days]',fontsize=16)
         ax.set_ylabel(r'Planet Radius [R$_\bigoplus$]',fontsize=16)
         # edges of the plot
@@ -347,7 +347,7 @@ class EtaBase(object):
         plt.rc('text', usetex=True)
         plt.rc('font', family='serif')
         fig, ax = plt.subplots(figsize=(12,8))
-        ax.set_title('{} Star Occurrence Rate [\%] From {}'.format(typekey, self.fname['name']),fontsize=16)
+        ax.set_title('{} Star Occurrence Rate [\%] from {}'.format(typekey, self.fname['title']),fontsize=16)
         ax.set_xlabel('Semi-Major Axis [AU]',fontsize=16)
         ax.set_ylabel(r'Planet Radius [R$_\bigoplus$]',fontsize=16)
         # edges of the plot
@@ -401,7 +401,7 @@ class EtaBase(object):
         plt.rc('text', usetex=True)
         plt.rc('font', family='serif')
         fig, ax = plt.subplots(figsize=(12,8))
-        ax.set_title('{} Star Occurrence Rate [\%] From {}'.format(typekey, self.fname['name']),fontsize=16)
+        ax.set_title('{} Star Occurrence Rate [\%] from {}'.format(typekey, self.fname['title']),fontsize=16)
         ax.set_xlabel('Semi-Major Axis [AU]',fontsize=16)
         ax.set_ylabel(r'Planet Mass [M$_\bigoplus$]',fontsize=16)
         # edges of the plot
@@ -452,7 +452,7 @@ class EtaBase(object):
         plt.rc('text', usetex=True)
         plt.rc('font', family='serif')
         fig, ax = plt.subplots(figsize=(12,8))
-        ax.set_title('{} Star Occurrence Rate [\%] From {}'.format(typekey, self.fname['name']),fontsize=16)
+        ax.set_title('{} Star Occurrence Rate [\%] from {}'.format(typekey, self.fname['title']),fontsize=16)
         ax.set_xlabel('Orbital Period [days]',fontsize=16)
         ax.set_ylabel(r'Planet Mass [M$_\bigoplus$]',fontsize=16)
         # edges of the plot
