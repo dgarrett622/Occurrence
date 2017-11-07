@@ -301,7 +301,10 @@ class EtaBase(object):
             x = np.array(self.PData['range'])*getattr(u,self.PData['unit']).to('day')
         else:
             x = np.array(self.Pdata['range'][typekey])*getattr(u,self.PData['unit']).to('day')
-        y = np.array(self.RpData['range'])*getattr(u,self.RpData['unit']).to('R_earth')
+        if self.RpData['input']:
+            y = np.array(self.RpData['range'])*getattr(u,self.RpData['unit']).to('R_earth')
+        else:
+            y = np.array(self.RpData['range'][typekey])*getattr(u,self.RpData['unit']).to('R_earth')
         xlabel = ['{0:.3g}'.format(_x) for _x in x]
         ylabel = ['{0:.2g}'.format(_y) for _y in y]
         # plot values
@@ -352,7 +355,10 @@ class EtaBase(object):
             x = np.array(self.aData['range'])*getattr(u,self.aData['unit']).to('AU')
         else:
             x = np.array(self.aData['range'][typekey])*getattr(u,self.aData['unit']).to('AU')
-        y = np.array(self.RpData['range'])*getattr(u,self.RpData['unit']).to('R_earth')
+        if self.RpData['input']:
+            y = np.array(self.RpData['range'])*getattr(u,self.RpData['unit']).to('R_earth')
+        else:
+            y = np.array(self.RpData['range'][typekey])*getattr(u,self.RpData['unit']).to('R_earth')
         xlabel = ['{0:.3g}'.format(_x) for _x in x]
         ylabel = ['{0:.2g}'.format(_y) for _y in y]
         # plot values
