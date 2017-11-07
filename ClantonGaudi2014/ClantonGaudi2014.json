@@ -1,0 +1,35 @@
+{
+  "RpData":{
+  "range": [],
+  "input": false,
+  "unit": "earthRad",
+  "scale": "log"
+  },
+  "MsiniData":{
+    "range": [1,10,100,1e3,1e4],
+    "input": true,
+    "unit": "M_earth",
+    "scale": "log"
+  },
+  "PData":{
+    "range": [1,10,1e2,1e3,1e4,1e5],
+    "input": true,
+    "unit": "day",
+    "scale": "log"
+  },
+  "aData":{
+    "range": [],
+    "input": false,
+    "unit": "AU",
+    "scale": "derived"
+  },
+  "starData":{
+    "type": ["M"],
+    "Teff": [[2650,3870]]
+  },
+  "fname": {
+  "name": "ClantonGaudi2014",
+  "title": "Clanton and Gaudi (2014)",
+  "suffix": ".txt"
+  }
+}
