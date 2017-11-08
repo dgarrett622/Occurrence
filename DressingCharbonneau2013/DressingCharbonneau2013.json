@@ -1,0 +1,35 @@
+{
+  "RpData":{
+  "range": [0.5,0.7,1,1.4,2,2.8,4,5.7,8,11.3,16,22.6,32],
+  "input": true,
+  "unit": "earthRad",
+  "scale": "log"
+  },
+  "MsiniData":{
+    "range": [],
+    "input": false,
+    "unit": "M_earth",
+    "scale": "derived"
+  },
+  "PData":{
+    "range": [0.68,1.2,2.0,3.4,5.9,10,17,29,50,85,146],
+    "input": true,
+    "unit": "day",
+    "scale": "log"
+  },
+  "aData":{
+    "range": [],
+    "input": false,
+    "unit": "AU",
+    "scale": "derived"
+  },
+  "starData":{
+    "type": ["M"],
+    "Teff": [[3200,4000]]
+  },
+  "fname": {
+  "name": "DressingCharbonneau2013",
+  "title": "Dressing and Charbonneau (2013)",
+  "suffix": ".txt"
+  }
+}
