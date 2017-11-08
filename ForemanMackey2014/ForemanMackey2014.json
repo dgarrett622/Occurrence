@@ -24,12 +24,12 @@
     "scale": "derived"
   },
   "starData":{
-    "type": ["GK","M"],
-    "Teff": [[4200,6100],[2400,4200]]
+    "type": ["GK"],
+    "Teff": [[4100,6100]]
   },
   "fname": {
-  "name": "Burke",
-  "title": "Burke",
-  "suffix": ".txt"
+  "name": "ForemanMackey2014",
+  "title": "Foreman-Mackey et al. (2014)",
+  "suffix": "_g.txt"
   }
 }

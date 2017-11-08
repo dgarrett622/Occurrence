@@ -1,9 +1,9 @@
 {
   "RpData":{
-  "range": [0.5,1,1.5,2,2.5,3,3.5,4],
+  "range": [0.67,1,1.5,2.2,3.4,5.1,7.6,11,17],
   "input": true,
   "unit": "earthRad",
-  "scale": "linear"
+  "scale": "log"
   },
   "MsiniData":{
     "range": [],
@@ -12,7 +12,7 @@
     "scale": "derived"
   },
   "PData":{
-    "range": [0.5,0.91,1.66,3.02,5.49,10,18.21,33.14,60.34,109.86,200],
+    "range": [10,20,40,80,160,320,640],
     "input": true,
     "unit": "day",
     "scale": "log"
@@ -24,12 +24,12 @@
     "scale": "derived"
   },
   "starData":{
-    "type": ["M"],
-    "Teff": [[2500,4000]]
+    "type": ["GK","M"],
+    "Teff": [[4200,6100],[2400,4200]]
   },
   "fname": {
-  "name": "DressingCharbonneau",
-  "title": "Dressing and Charbonneau (2015)",
+  "name": "Burke2015",
+  "title": "Burke et al. (2015)",
   "suffix": ".txt"
   }
 }
