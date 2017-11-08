@@ -1,6 +1,6 @@
 {
   "RpData":{
-  "range": [1,2,4,8,16],
+  "range": [0.8,1.25,2,4,6,22],
   "input": true,
   "unit": "earthRad",
   "scale": "log"
@@ -12,7 +12,7 @@
     "scale": "derived"
   },
   "PData":{
-    "range": [6.25,12.5,25,50,100,200,400],
+    "range": [0.8,2,3.4,5.9,10,17,29,50,85,145,245,418],
     "input": true,
     "unit": "day",
     "scale": "log"
@@ -24,12 +24,12 @@
     "scale": "derived"
   },
   "starData":{
-    "type": ["GK"],
-    "Teff": [[4100,6100]]
+    "type": ["All"],
+    "Teff": [[2400,7100]]
   },
   "fname": {
-  "name": "Petigura2013b",
-  "title": "Petigura et al. (2013b)",
+  "name": "Fressin2013",
+  "title": "Fressin et al. (2013)",
   "suffix": ".txt"
   }
 }
