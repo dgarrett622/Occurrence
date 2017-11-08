@@ -1,0 +1,35 @@
+{
+  "RpData":{
+  "range": [1,1.41,2,2.83,4,5.66,8,11.31,16,22.63,32],
+  "input": true,
+  "unit": "earthRad",
+  "scale": "log"
+  },
+  "MsiniData":{
+    "range": [],
+    "input": false,
+    "unit": "M_earth",
+    "scale": "derived"
+  },
+  "PData":{
+    "range": [0.68,1.2,2,3.4,5.9,10,17,29,50],
+    "input": true,
+    "unit": "day",
+    "scale": "log"
+  },
+  "aData":{
+    "range": [],
+    "input": false,
+    "unit": "AU",
+    "scale": "derived"
+  },
+  "starData":{
+    "type": ["GK"],
+    "Teff": [[4100,6100]]
+  },
+  "fname": {
+  "name": "Howard2012",
+  "title": "Howard et al (2012)",
+  "suffix": ".txt"
+  }
+}
