@@ -131,7 +131,7 @@ class EtaBase(object):
         Ts = Teff[vals]
         Ms = Msun[vals]
         self.Msun_from_Teff = interpolate.InterpolatedUnivariateSpline(Ts[::-1],Ms[::-1],ext=1)
-        
+
         # convert given data to missing data types
         if self.PData['input']:
             self.P_to_a()
@@ -201,7 +201,7 @@ class EtaBase(object):
         This method uses the Forecaster model to convert mass to radius'''
         self.RpData['input'] = False
         self.RpData['unit'] = 'earthRad'
-        self.RpData['scale'] = self.MsiniData['scale']
+        self.RpData['scale'] = 'linear'
         self.RpData['range'] = {}
         # get Forecaster coefficients
         C, S, T, R = self.Forecaster_coeffs()
@@ -222,7 +222,7 @@ class EtaBase(object):
         This method uses the Forecaster model to convert radius to mass'''
         self.MsiniData['input'] = False
         self.MsiniData['unit'] = 'earthMass'
-        self.MsiniData['scale'] = self.RpData['scale']
+        self.MsiniData['scale'] = 'log'
         # get Forecaster coefficients
         C, S, T, R = self.Forecaster_coeffs()
         # get ranges of mass from Rp
@@ -235,23 +235,25 @@ class EtaBase(object):
         
     def Forecaster_coeffs(self):
         '''Determines coefficients from Forecaster modified to transition point
-        at Saturn mass and flat leg past Jupiter mass'''
+        at Saturn mass and slight incline past Jupiter mass from Bashi et al. 2017'''
         # initial values
         S = np.array([0.2790,0,0,0,0.881]) # exponent
         C = np.array([np.log10(1.008), 0, 0, 0, 0]) # coefficient
         T = np.array([0.,2.04,95.16,(u.M_jupiter).to(u.M_earth),((0.0800*u.M_sun).to(u.M_earth)).value,np.inf]) # mass break points
         Rj = u.R_jupiter.to(u.R_earth)
-        Rs = 8.522 #saturn radius
-        
+        Rs = 8.522 # Saturn radius
+        # between T[1] and Saturn
         S[1] = (np.log10(Rs) - (C[0] + np.log10(T[1])*S[0]))/(np.log10(T[2]) - np.log10(T[1]))
         C[1] = np.log10(Rs) - np.log10(T[2])*S[1]
-        
+        # between Saturn and Jupiter
         S[2] = (np.log10(Rj) - np.log10(Rs))/(np.log10(T[3]) - np.log10(T[2]))
         C[2] = np.log10(Rj) - np.log10(T[3])*S[2]
-        
-        C[3] = np.log10(Rj)
-        
-        C[4] = np.log10(Rj) - np.log10(T[4])*S[4]
+        # between Jupiter and stellar mass
+        S[3] = 0.01
+        C[3] = np.log10(Rj) - np.log10(T[3])*S[3]
+        # above stellar mass
+        Rstell = 10.**(C[3])*T[4]**S[3]
+        C[4] = np.log10(Rstell) - np.log10(T[4])*S[4]
         
         # get radius break points
         R = np.zeros(T.shape)
@@ -306,7 +308,7 @@ class EtaBase(object):
         else:
             y = np.array(self.RpData['range'][typekey])*getattr(u,self.RpData['unit']).to('R_earth')
         xlabel = ['{0:.3g}'.format(_x) for _x in x]
-        ylabel = ['{0:.2g}'.format(_y) for _y in y]
+        ylabel = ['{0:.3g}'.format(_y) for _y in y]
         # plot values
         eta = self.Etas[typekey]['eta']
         eta = np.ma.masked_where(np.isnan(eta), eta)
@@ -322,10 +324,13 @@ class EtaBase(object):
             ax.set_xscale('log')
         if self.RpData['scale'] == 'log':
             ax.set_yscale('log')
+
+        ax.set_xticks(x)
+        ax.set_xticklabels(xlabel)
+        ax.set_yticks(y)
+        ax.set_yticklabels(ylabel)
         ax.tick_params(axis='both', bottom='on', top='off', right='off', left='on', which='major', labelsize=14)
         ax.tick_params(axis='both', bottom='off', top='off', right='off', left='off', which='minor')
-        plt.xticks(x,xlabel)
-        plt.yticks(y,ylabel)
         fig.show()
         # save figure
         folder = os.path.join(os.path.abspath(os.path.dirname(__file__)),'plots')
@@ -376,10 +381,12 @@ class EtaBase(object):
             ax.set_xscale('log')
         if self.RpData['scale'] == 'log':
             ax.set_yscale('log')
+        ax.set_xticks(x)
+        ax.set_xticklabels(xlabel)
+        ax.set_yticks(y)
+        ax.set_yticklabels(ylabel)
         ax.tick_params(axis='both', bottom='on', top='off', right='off', left='on', which='major', labelsize=14)
         ax.tick_params(axis='both', bottom='off', top='off', right='off', left='off', which='minor')
-        plt.xticks(x,xlabel)
-        plt.yticks(y,ylabel)
         fig.show()
         # save figure
         folder = os.path.join(os.path.abspath(os.path.dirname(__file__)),'plots')
@@ -427,10 +434,12 @@ class EtaBase(object):
             ax.set_xscale('log')
         if self.MsiniData['scale'] == 'log':
             ax.set_yscale('log')
+        ax.set_xticks(x)
+        ax.set_xticklabels(xlabel)
+        ax.set_yticks(y)
+        ax.set_yticklabels(ylabel)
         ax.tick_params(axis='both', bottom='on', top='off', right='off', left='on', which='major', labelsize=14)
         ax.tick_params(axis='both', bottom='off', top='off', right='off', left='off', which='minor')
-        plt.xticks(x,xlabel)
-        plt.yticks(y,ylabel)
         fig.show()
         # save figure
         folder = os.path.join(os.path.abspath(os.path.dirname(__file__)),'plots')
@@ -478,10 +487,12 @@ class EtaBase(object):
             ax.set_xscale('log')
         if self.MsiniData['scale'] == 'log':
             ax.set_yscale('log')
+        ax.set_xticks(x)
+        ax.set_xticklabels(xlabel)
+        ax.set_yticks(y)
+        ax.set_yticklabels(ylabel)
         ax.tick_params(axis='both', bottom='on', top='off', right='off', left='on', which='major', labelsize=14)
         ax.tick_params(axis='both', bottom='off', top='off', right='off', left='off', which='minor')
-        plt.xticks(x,xlabel)
-        plt.yticks(y,ylabel)
         fig.show()
         # save figure
         folder = os.path.join(os.path.abspath(os.path.dirname(__file__)),'plots')
