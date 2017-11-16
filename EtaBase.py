@@ -302,7 +302,7 @@ class EtaBase(object):
         if self.PData['input']:
             x = np.array(self.PData['range'])*getattr(u,self.PData['unit']).to('day')
         else:
-            x = np.array(self.Pdata['range'][typekey])*getattr(u,self.PData['unit']).to('day')
+            x = np.array(self.PData['range'][typekey])*getattr(u,self.PData['unit']).to('day')
         if self.RpData['input']:
             y = np.array(self.RpData['range'])*getattr(u,self.RpData['unit']).to('R_earth')
         else:
