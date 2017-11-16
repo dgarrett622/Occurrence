@@ -1,0 +1,5 @@
+0.60e-2	1.1e-2	NaN	NaN	NaN	NaN	
+0.40e-2	0.1e-2	NaN	NaN	NaN	NaN	
+0.77e-2	0.46e-2	0.2e-2	0.5e-2	0.3e-2	NaN	
+0.46e-2	NaN	0.55e-2	1.2e-2	NaN	1.1e-2	
+NaN	0.45e-2	0.65e-2	1e-2	0.7e-2	0.2e-2
