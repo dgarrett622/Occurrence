@@ -157,6 +157,19 @@ class EtaBase(object):
         
         return m
     
+    def get_a_from_P(self,P,Ms):
+        '''Converts list of period to semi-major axis
+        
+        Args:
+            P (astropy Quantity): list of period with unit (day)
+            Ms (astropy Quantity): stellar mass
+        
+        Returns:
+            a (astropy Quantity): list of semi-major axis with unit (AU)
+        '''
+        a = (P**2*const.G*Ms/(4.*np.pi**2))**(1./3.)
+        return a.to('AU')
+    
     def P_to_a(self):
         '''Converts period to semi-major axis for each spectral type given
         
@@ -168,13 +181,24 @@ class EtaBase(object):
         # get ranges based on Teff based mass
         tmp_dict = {}
         for i in xrange(len(self.starData['type'])):
-            Tlow = np.min(self.starData['Teff'][i])
-            Thigh = np.max(self.starData['Teff'][i])
-            Ms = self.Msun_from_Teff.integral(Tlow,Thigh)/(Thigh-Tlow)*u.M_sun
+            Ms = self.get_Ms_from_Teff(self.starData['Teff'][i])
             P = np.array(self.PData['range'])*getattr(u,self.PData['unit'])
-            tmp_a = (P**2*const.G*Ms/(4.*np.pi**2))**(1./3.)
+            tmp_a = self.get_a_from_P(P,Ms)
             tmp_dict[self.starData['type'][i]] = tmp_a.to('AU').value
         self.aData['range'].update(tmp_dict)
+        
+    def get_P_from_a(self,a,Ms):
+        '''Converts list of semi-major axis to period
+        
+        Args:
+            a (astropy Quantity): list of semi-major axis with unit (AU)
+            Ms (astropy Quantity): stellar mass
+            
+        Returns:
+            P (astropy Quantity): list of periods with unit (day)
+        '''
+        P = 2.*np.pi*np.sqrt(a**3/(const.G*Ms))
+        return P.to('day')
         
     def a_to_P(self):
         '''Converts semi-major axis to period for each spectral type given
@@ -187,14 +211,36 @@ class EtaBase(object):
         # get ranges based on Teff based mass
         tmp_dict = {}
         for i in xrange(len(self.starData['type'])):
-            Tlow = np.min(self.starData['Teff'][i])
-            Thigh = np.max(self.starData['Teff'][i])
-            Ms = self.Msun_from_Teff.integral(Tlow,Thigh)/(Thigh-Tlow)*u.M_sun
+            Ms = self.get_Ms_from_Teff(self.starData['Teff'][i])
             a = np.array(self.aData['range'])*getattr(u,self.aData['unit'])
-            tmp_P = 2.*np.pi*np.sqrt(a**3/(const.G*Ms))
+            tmp_P = self.get_P_from_a(a,Ms)
             tmp_dict[self.starData['type'][i]] = tmp_P.to('day').value
         self.PData['range'].update(tmp_dict)
+        
+    def get_Ms_from_Teff(self,Trange):
+        '''Finds average stellar mass for Teff range'''
+        Ms = self.Msun_from_Teff.integral(Trange[0],Trange[1])/(Trange[1]-Trange[0])*u.M_sun
+        return Ms
     
+    def get_Rp_from_M(self,M):
+        '''Converts planetary mass to radius
+        
+        Args:
+            M (ndarray): list of masses in earthMass
+        
+        Returns:
+            Rp (ndarray): list of radii in earthRad
+        '''
+        # get Forecaster coefficients
+        C, S, T, R = self.Forecaster_coeffs()
+        # if single value, cast to array
+        M = np.array(M, ndmin=1, copy=False)
+        Rp = np.zeros(M.shape)
+        for j in xrange(len(T)-1):
+            vals = (M > T[j])&(M <= T[j+1])
+            Rp[vals] = 10.0**C[j]*M[vals]**S[j]
+        return Rp
+        
     def M_to_Rp(self):
         '''Converts mass to planetary radius for each spectral type given
         
@@ -202,19 +248,28 @@ class EtaBase(object):
         self.RpData['input'] = False
         self.RpData['unit'] = 'earthRad'
         self.RpData['scale'] = 'linear'
-        self.RpData['range'] = {}
+        # get range of Rp from mass
+        M = np.array(self.MsiniData['range'])*getattr(u,self.MsiniData['unit']).to('earthMass')
+        self.RpData['range'] = self.get_Rp_from_M(M)
+    
+    def get_M_from_Rp(self,Rp):
+        '''Converts planetary radius to mass
+        
+        Args:
+            Rp (ndarray): list of planetary radii in earthRad
+            
+        Returns:
+            M (ndarray): list of planetary masses in earthMass
+        '''
         # get Forecaster coefficients
         C, S, T, R = self.Forecaster_coeffs()
-        # get ranges of Rp from mass
-        tmp_dict = {}
-        for i in xrange(len(self.starData['type'])):
-            M = np.array(self.MsiniData['range'])*getattr(u,self.MsiniData['unit']).to('earthMass')
-            tmp_R = np.zeros(M.shape)
-            for j in xrange(len(T)-1):
-                vals = (M > T[j])&(M <= T[j+1])
-                tmp_R[vals] = 10.0**(C[j])*M[vals]**(S[j])
-            tmp_dict[self.starData['type'][i]] = tmp_R
-        self.RpData['range'].update(tmp_dict)
+        # if single value, cast to array
+        Rp = np.array(Rp, ndmin=1, copy=False)
+        M = np.zeros(Rp.shape)
+        for j in xrange(len(T)-1):
+            vals = (Rp>R[j])&(Rp<=R[j+1])
+            M[vals] = 10.0**((np.log10(Rp[vals])-C[j])/S[j])
+        return M
     
     def Rp_to_M(self):
         '''Converts planetary radius to mass for each spectral type given
@@ -223,15 +278,9 @@ class EtaBase(object):
         self.MsiniData['input'] = False
         self.MsiniData['unit'] = 'earthMass'
         self.MsiniData['scale'] = 'log'
-        # get Forecaster coefficients
-        C, S, T, R = self.Forecaster_coeffs()
-        # get ranges of mass from Rp
+        # get range of mass from Rp
         Rp = np.array(self.RpData['range'])*getattr(u,self.RpData['unit']).to('earthRad')
-        tmp_M = np.zeros(Rp.shape)
-        for j in xrange(len(T)-1):
-            vals = (Rp>R[j])&(Rp<=R[j+1])
-            tmp_M[vals] = 10.0**((np.log10(Rp[vals])-C[j])/S[j])
-        self.MsiniData['range'] = tmp_M
+        self.MsiniData['range'] = self.get_M_from_Rp(Rp)
         
     def Forecaster_coeffs(self):
         '''Determines coefficients from Forecaster modified to transition point
@@ -303,10 +352,7 @@ class EtaBase(object):
             x = np.array(self.PData['range'])*getattr(u,self.PData['unit']).to('day')
         else:
             x = np.array(self.PData['range'][typekey])*getattr(u,self.PData['unit']).to('day')
-        if self.RpData['input']:
-            y = np.array(self.RpData['range'])*getattr(u,self.RpData['unit']).to('R_earth')
-        else:
-            y = np.array(self.RpData['range'][typekey])*getattr(u,self.RpData['unit']).to('R_earth')
+        y = np.array(self.RpData['range'])*getattr(u,self.RpData['unit']).to('R_earth')
         xlabel = ['{0:.3g}'.format(_x) for _x in x]
         ylabel = ['{0:.3g}'.format(_y) for _y in y]
         # plot values
@@ -360,10 +406,7 @@ class EtaBase(object):
             x = np.array(self.aData['range'])*getattr(u,self.aData['unit']).to('AU')
         else:
             x = np.array(self.aData['range'][typekey])*getattr(u,self.aData['unit']).to('AU')
-        if self.RpData['input']:
-            y = np.array(self.RpData['range'])*getattr(u,self.RpData['unit']).to('R_earth')
-        else:
-            y = np.array(self.RpData['range'][typekey])*getattr(u,self.RpData['unit']).to('R_earth')
+        y = np.array(self.RpData['range'])*getattr(u,self.RpData['unit']).to('R_earth')
         xlabel = ['{0:.3g}'.format(_x) for _x in x]
         ylabel = ['{0:.2g}'.format(_y) for _y in y]
         # plot values
