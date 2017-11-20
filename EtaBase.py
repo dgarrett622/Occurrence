@@ -334,187 +334,83 @@ class EtaBase(object):
         for onetype in self.starData['type']:
             self.plot_oneaM(onetype)
 
-    def plot_onePRp(self, typekey):
+    def plot_onePRp(self, typekey, saveplot=True):
         '''Plots occurrence rates for a spectral type with axes of Period
         and planetary radius and saves plot to plots folder
         (INCLUDE TEXT ON PLOT?)
         Args:
-            typekey (string): stellar type'''
-        # use TeX fonts
-        plt.rc('text', usetex=True)
-        plt.rc('font', family='serif')
-        fig, ax = plt.subplots(figsize=(12,8))
-        ax.set_title('{} Star Occurrence Rate [\%] from {}'.format(typekey, self.fname['title']),fontsize=16)
-        ax.set_xlabel('Orbital Period [days]',fontsize=16)
-        ax.set_ylabel(r'Planet Radius [R$_\bigoplus$]',fontsize=16)
-        # edges of the plot
-        if self.PData['input']:
-            x = np.array(self.PData['range'])*getattr(u,self.PData['unit']).to('day')
-        else:
-            x = np.array(self.PData['range'][typekey])*getattr(u,self.PData['unit']).to('day')
-        y = np.array(self.RpData['range'])*getattr(u,self.RpData['unit']).to('R_earth')
-        xlabel = ['{0:.3g}'.format(_x) for _x in x]
-        ylabel = ['{0:.3g}'.format(_y) for _y in y]
-        # plot values
-        eta = self.Etas[typekey]['eta']
-        eta = np.ma.masked_where(np.isnan(eta), eta)
-        cmap = plt.cm.Blues_r
-        cmap.set_under('k')
-        cmap.set_over('w')
-        cmap.set_bad('k',1)
-        a = ax.pcolormesh(x,y,100*eta,norm=colors.LogNorm(vmin=1e-3,vmax=1e2),rasterized=True,edgecolor='none',cmap=cmap)
-        c = fig.colorbar(a,ticks=[0.001,0.01,0.1,1,10,100])
-        c.ax.set_yticklabels(['{} \%'.format(10.**(vv)) for vv in range(-3,3)],fontsize=14)
-        # scale for axes
-        if self.PData['scale'] == 'log':
-            ax.set_xscale('log')
-        if self.RpData['scale'] == 'log':
-            ax.set_yscale('log')
-
-        ax.set_xticks(x)
-        ax.set_xticklabels(xlabel)
-        ax.set_yticks(y)
-        ax.set_yticklabels(ylabel)
-        ax.tick_params(axis='both', bottom='on', top='off', right='off', left='on', which='major', labelsize=14)
-        ax.tick_params(axis='both', bottom='off', top='off', right='off', left='off', which='minor')
-        fig.show()
-        # save figure
-        folder = os.path.join(os.path.abspath(os.path.dirname(__file__)),'plots')
-        if not os.path.isdir(folder):
-            os.mkdir(folder)
-        plotfolder = os.path.join(os.path.abspath(os.path.dirname(__file__)),'plots',self.fname['name'])
-        if not os.path.isdir(plotfolder):
-            os.mkdir(plotfolder)
-        plotpath = os.path.join(plotfolder,typekey+'_eta_PRp.png')
-        fig.savefig(plotpath, format='png', bbox_inches='tight',pad_inches=0.1)
+            typekey (string): stellar type
+            saveplot (boolean): if True, saves plot in plots folder on disk
+        '''
+        self.make_a_plot(typekey,'P','Rp',self.PData,self.RpData,saveplot)
     
-    def plot_oneaRp(self, typekey):
+    def plot_oneaRp(self, typekey, saveplot=True):
         '''Plots occurrence rates for a spectral type with axes of Period
         and planetary radius and saves plot to plots folder
         (INCLUDE TEXT ON PLOT?)
         Args:
-            typekey (string): stellar type'''
-        # use TeX fonts
-        plt.rc('text', usetex=True)
-        plt.rc('font', family='serif')
-        fig, ax = plt.subplots(figsize=(12,8))
-        ax.set_title('{} Star Occurrence Rate [\%] from {}'.format(typekey, self.fname['title']),fontsize=16)
-        ax.set_xlabel('Semi-Major Axis [AU]',fontsize=16)
-        ax.set_ylabel(r'Planet Radius [R$_\bigoplus$]',fontsize=16)
-        # edges of the plot
-        if self.aData['input']:
-            x = np.array(self.aData['range'])*getattr(u,self.aData['unit']).to('AU')
-        else:
-            x = np.array(self.aData['range'][typekey])*getattr(u,self.aData['unit']).to('AU')
-        y = np.array(self.RpData['range'])*getattr(u,self.RpData['unit']).to('R_earth')
-        xlabel = ['{0:.3g}'.format(_x) for _x in x]
-        ylabel = ['{0:.2g}'.format(_y) for _y in y]
-        # plot values
-        eta = self.Etas[typekey]['eta']
-        eta = np.ma.masked_where(np.isnan(eta), eta)
-        cmap = plt.cm.Blues_r
-        cmap.set_under('k')
-        cmap.set_over('w')
-        cmap.set_bad('k',1)
-        a = ax.pcolormesh(x,y,100*eta,norm=colors.LogNorm(vmin=1e-3,vmax=1e2),rasterized=True,edgecolor='none',cmap=cmap)
-        c = fig.colorbar(a,ticks=[0.001,0.01,0.1,1,10,100])
-        c.ax.set_yticklabels(['{} \%'.format(10.**(vv)) for vv in range(-3,3)],fontsize=14)
-        # scale for axes
-        if self.aData['scale'] == 'log':
-            ax.set_xscale('log')
-        if self.RpData['scale'] == 'log':
-            ax.set_yscale('log')
-        ax.set_xticks(x)
-        ax.set_xticklabels(xlabel)
-        ax.set_yticks(y)
-        ax.set_yticklabels(ylabel)
-        ax.tick_params(axis='both', bottom='on', top='off', right='off', left='on', which='major', labelsize=14)
-        ax.tick_params(axis='both', bottom='off', top='off', right='off', left='off', which='minor')
-        fig.show()
-        # save figure
-        folder = os.path.join(os.path.abspath(os.path.dirname(__file__)),'plots')
-        if not os.path.isdir(folder):
-            os.mkdir(folder)
-        plotfolder = os.path.join(os.path.abspath(os.path.dirname(__file__)),'plots',self.fname['name'])
-        if not os.path.isdir(plotfolder):
-            os.mkdir(plotfolder)
-        plotpath = os.path.join(plotfolder,typekey+'_eta_aRp.png')
-        fig.savefig(plotpath, format='png', bbox_inches='tight',pad_inches=0.1)
+            typekey (string): stellar type
+            saveplot (boolean): if True, saves plot in plots folder on disk
+        '''
+        self.make_a_plot(typekey,'a','Rp',self.aData,self.RpData,saveplot)
         
-    def plot_oneaM(self, typekey):
+    def plot_oneaM(self, typekey, saveplot=True):
         '''Plots occurrence rates for a spectral type with axes of semi-major
         axis and mass and saves plot to plots folder
         (INCLUDE TEXT ON PLOT?)
         Args:
-            typekey (string): stellar type'''
-        # use TeX fonts
-        plt.rc('text', usetex=True)
-        plt.rc('font', family='serif')
-        fig, ax = plt.subplots(figsize=(12,8))
-        ax.set_title('{} Star Occurrence Rate [\%] from {}'.format(typekey, self.fname['title']),fontsize=16)
-        ax.set_xlabel('Semi-Major Axis [AU]',fontsize=16)
-        ax.set_ylabel(r'Planet Mass [M$_\bigoplus$]',fontsize=16)
-        # edges of the plot
-        if self.aData['input']:
-            x = np.array(self.aData['range'])*getattr(u,self.aData['unit']).to('AU')
-        else:
-            x = np.array(self.aData['range'][typekey])*getattr(u,self.aData['unit']).to('AU')
-        y = np.array(self.MsiniData['range'])*getattr(u,self.MsiniData['unit']).to('earthMass')
-        xlabel = ['{:.3g}'.format(_x) for _x in x]
-        ylabel = ['{:.2g}'.format(_y) for _y in y]
-        # plot values
-        eta = self.Etas[typekey]['eta']
-        eta = np.ma.masked_where(np.isnan(eta), eta)
-        cmap = plt.cm.Blues_r
-        cmap.set_under('k')
-        cmap.set_over('w')
-        cmap.set_bad('k',1)
-        a = ax.pcolormesh(x,y,100*eta,norm=colors.LogNorm(vmin=1e-3,vmax=1e2),rasterized=True,edgecolor='none',cmap=cmap)
-        c = fig.colorbar(a,ticks=[0.001,0.01,0.1,1,10,100])
-        c.ax.set_yticklabels(['{} \%'.format(10.**(vv)) for vv in range(-3,3)],fontsize=14)
-        # scale for axes
-        if self.aData['scale'] == 'log':
-            ax.set_xscale('log')
-        if self.MsiniData['scale'] == 'log':
-            ax.set_yscale('log')
-        ax.set_xticks(x)
-        ax.set_xticklabels(xlabel)
-        ax.set_yticks(y)
-        ax.set_yticklabels(ylabel)
-        ax.tick_params(axis='both', bottom='on', top='off', right='off', left='on', which='major', labelsize=14)
-        ax.tick_params(axis='both', bottom='off', top='off', right='off', left='off', which='minor')
-        fig.show()
-        # save figure
-        folder = os.path.join(os.path.abspath(os.path.dirname(__file__)),'plots')
-        if not os.path.isdir(folder):
-            os.mkdir(folder)
-        plotfolder = os.path.join(os.path.abspath(os.path.dirname(__file__)),'plots',self.fname['name'])
-        if not os.path.isdir(plotfolder):
-            os.mkdir(plotfolder)
-        plotpath = os.path.join(plotfolder,typekey+'_eta_aM.png')
-        fig.savefig(plotpath, format='png', bbox_inches='tight',pad_inches=0.1)
+            typekey (string): stellar type
+            saveplot (boolean): if True, saves plot in plots folder on disk
+        '''
+        self.make_a_plot(typekey,'a','M',self.aData,self.MsiniData,saveplot)
         
-    def plot_onePM(self, typekey):
+    def plot_onePM(self, typekey, saveplot=True):
         '''Plots occurrence rates for a spectral type with axes of period and
         mass and saves plot to plots folder
         (INCLUDE TEXT ON PLOT?)
         Args:
-            typekey (string): stellar type'''
+            typekey (string): stellar type
+            saveplot (boolean): if True, saves plot in plots folder on disk
+        '''
+        self.make_a_plot(typekey,'P','M',self.PData,self.MsiniData,saveplot)
+    
+    def make_a_plot(self, typekey, xtype, ytype, xdict, ydict, saveplot=True):
+        '''Generates an occurrence rate plot
+        
+        Args:
+            typekey (string): stellar type
+            xtype (string): type of data for x axis ('a' or 'P')
+            ytype (string): type of data for y axis ('Rp' or 'M')
+            xdict (dictionary): dictionary for x axis data
+            ydict (dictionary): dictionary for y axis data
+        '''
         # use TeX fonts
-        plt.rc('text', usetex=True)
-        plt.rc('font', family='serif')
+        plt.rc('text',usetex=True)
+        plt.rc('font',family='serif')
         fig, ax = plt.subplots(figsize=(12,8))
         ax.set_title('{} Star Occurrence Rate [\%] from {}'.format(typekey, self.fname['title']),fontsize=16)
-        ax.set_xlabel('Orbital Period [days]',fontsize=16)
-        ax.set_ylabel(r'Planet Mass [M$_\bigoplus$]',fontsize=16)
-        # edges of the plot
-        if self.PData['input']:
-            x = np.array(self.PData['range'])*getattr(u,self.PData['unit']).to('day')
+        
+        if xtype == 'a':
+            ax.set_xlabel('Semi-Major Axis [AU]',fontsize=16)
+            if xdict['input']:
+                x = np.array(xdict['range'])*getattr(u,xdict['unit']).to('AU')
+            else:
+                x = np.array(xdict['range'][typekey])*getattr(u,xdict['unit']).to('AU')
         else:
-            x = np.array(self.PData['range'][typekey])*getattr(u,self.PData['unit']).to('day')
-        y = np.array(self.MsiniData['range'])*getattr(u,self.MsiniData['unit']).to('earthMass')
+            ax.set_xlabel('Orbital Period [days]',fontsize=16)
+            if xdict['input']:
+                x = np.array(xdict['range'])*getattr(u,xdict['unit']).to('day')
+            else:
+                x = np.array(xdict['range'][typekey])*getattr(u,xdict['unit']).to('day')
+        
+        if ytype == 'Rp':
+            ax.set_ylabel(r'Planet Radius [R$_\bigoplus$]',fontsize=16)
+            y = np.array(ydict['range'])*getattr(u,ydict['unit']).to('R_earth')
+        else:
+            ax.set_ylabel(r'Planet Mass [M$_\bigoplus$]',fontsize=16)
+            y = np.array(ydict['range'])*getattr(u,ydict['unit']).to('earthMass')
         xlabel = ['{:.3g}'.format(_x) for _x in x]
-        ylabel = ['{:.2g}'.format(_y) for _y in y]
+        ylabel = ['{:.3g}'.format(_y) for _y in y]
         # plot values
         eta = self.Etas[typekey]['eta']
         eta = np.ma.masked_where(np.isnan(eta), eta)
@@ -526,9 +422,9 @@ class EtaBase(object):
         c = fig.colorbar(a,ticks=[0.001,0.01,0.1,1,10,100])
         c.ax.set_yticklabels(['{} \%'.format(10.**(vv)) for vv in range(-3,3)],fontsize=14)
         # scale for axes
-        if self.aData['scale'] == 'log':
+        if xdict['scale'] == 'log':
             ax.set_xscale('log')
-        if self.MsiniData['scale'] == 'log':
+        if ydict['scale'] == 'log':
             ax.set_yscale('log')
         ax.set_xticks(x)
         ax.set_xticklabels(xlabel)
@@ -544,5 +440,15 @@ class EtaBase(object):
         plotfolder = os.path.join(os.path.abspath(os.path.dirname(__file__)),'plots',self.fname['name'])
         if not os.path.isdir(plotfolder):
             os.mkdir(plotfolder)
-        plotpath = os.path.join(plotfolder,typekey+'_eta_PM.png')
+        if xtype == 'a':
+            if ytype == 'Rp':
+                ending = '_eta_aRp.png'
+            else:
+                ending = '_eta_aM.png'
+        else:
+            if ytype == 'Rp':
+                ending = '_eta_PRp.png'
+            else:
+                ending = '_eta_PM.png'
+        plotpath = os.path.join(plotfolder,typekey+ending)
         fig.savefig(plotpath, format='png', bbox_inches='tight',pad_inches=0.1)
