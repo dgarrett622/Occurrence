@@ -146,6 +146,7 @@ class EtaBase(object):
         '''Reads in eta and sigma files and stores them in self.Etas'''
         ntypes = len(self.starData['type'])
         tmp = np.genfromtxt(fname, comments='%')
+        tmp = np.array(tmp,copy=False,ndmin=2)
         nlines, nPa = tmp.shape
         nRM = nlines/ntypes
         tmp_val = tmp.reshape((ntypes,nRM,nPa))
