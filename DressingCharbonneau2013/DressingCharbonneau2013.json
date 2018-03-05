@@ -12,7 +12,7 @@
     "scale": "derived"
   },
   "PData":{
-    "range": [0.68,1.2,2.0,3.4,5.9,10,17,29,50,85,146],
+    "range": [0.68,10,50],
     "input": true,
     "unit": "day",
     "scale": "log"
