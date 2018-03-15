@@ -415,6 +415,8 @@ class EtaBase(object):
         # plot values
         eta = self.Etas[typekey]['eta']
         eta = np.ma.masked_where(np.isnan(eta), eta)
+        if eta.shape[0] == 1:
+            eta = eta.reshape((eta.shape[1],eta.shape[0]))
         cmap = plt.cm.Blues_r
         cmap.set_under('k')
         cmap.set_over('w')
