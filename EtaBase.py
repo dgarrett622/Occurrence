@@ -54,7 +54,7 @@ class EtaBase(object):
         self.MsiniData = {}
         self.PData = {}
         self.aData = {}
-        self.starData = {}
+        self.Teff = {}
         self.Etas = {}
         self.fname = {}
         self.specs = specs
@@ -71,10 +71,9 @@ class EtaBase(object):
         self.PData['range'] = np.array(self.specs['PData']['range'])
         self.aData['range'] = np.array(self.specs['aData']['range'])
         
-        # fill in starData from script file
-        keys2 = ['type','Teff']
-        for key in keys2:
-            self.starData[key] = self.specs['starData'][key]
+        # fill in Teff data from script file
+        for i in xrange(len(self.specs['starData']['type'])):
+            self.Teff[self.specs['starData']['type'][i]] = self.specs['starData']['Teff'][i] 
         
         # fill in name and file information of data
         keys3 = ['name','title','suffix']
@@ -97,22 +96,23 @@ class EtaBase(object):
         
         # pull in data from supplied files
         print('Pulling occurrence rate data from {}'.format(self.fname['name']))
-        ntypes = len(self.starData['type'])
-        for i in xrange(ntypes):
-            self.Etas[self.starData['type'][i]] = {}
+
+        for key in self.Teff.keys():
+            self.Etas[key] = {}
         self.Etas = self.readfiles(fEta,'eta')
+
         # pull in positive sigma 
         if fsigp is not None:
-            for i in xrange(ntypes):
+            for key in self.Teff.keys():
                 tmp_dict = self.readfiles(fsigp,'sigp')
-                self.Etas[self.starData['type'][i]].update(tmp_dict[self.starData['type'][i]])
+                self.Etas[key].update(tmp_dict[key])
             print('Positive sigma data found and loaded')
-        
+
         # pull in negative sigma
         if fsign is not None:
-            for i in xrange(ntypes):
+            for key in self.Teff.keys():
                 tmp_dict = self.readfiles(fsign, 'sign')
-                self.Etas[self.starData['type'][i]].update(tmp_dict[self.starData['type'][i]])
+                self.Etas[key].update(tmp_dict[key])
             print('Negative sigma data found and loaded')
         
         # get necessary stellar data and interpolants
@@ -144,7 +144,7 @@ class EtaBase(object):
         
     def readfiles(self, fname, key):
         '''Reads in eta and sigma files and stores them in self.Etas'''
-        ntypes = len(self.starData['type'])
+        ntypes = len(self.Teff.keys())
         tmp = np.genfromtxt(fname, comments='%')
         tmp = np.array(tmp,copy=False,ndmin=2)
         nlines, nPa = tmp.shape
@@ -154,7 +154,7 @@ class EtaBase(object):
         m = {}
         for i in xrange(ntypes):
             tmp_dict = {key: tmp_val[i,:,:]}
-            m[self.starData['type'][i]] = tmp_dict
+            m[self.specs['starData']['type'][i]] = tmp_dict
         
         return m
     
@@ -181,11 +181,11 @@ class EtaBase(object):
         self.aData['range'] = {}
         # get ranges based on Teff based mass
         tmp_dict = {}
-        for i in xrange(len(self.starData['type'])):
-            Ms = self.get_Ms_from_Teff(self.starData['Teff'][i])
+        for key in self.Teff.keys():
+            Ms = self.get_Ms_from_Teff(self.Teff[key])
             P = np.array(self.PData['range'])*getattr(u,self.PData['unit'])
             tmp_a = self.get_a_from_P(P,Ms)
-            tmp_dict[self.starData['type'][i]] = tmp_a.to('AU').value
+            tmp_dict[key] = tmp_a.to('AU').value
         self.aData['range'].update(tmp_dict)
         
     def get_P_from_a(self,a,Ms):
@@ -211,11 +211,11 @@ class EtaBase(object):
         self.PData['range'] = {}
         # get ranges based on Teff based mass
         tmp_dict = {}
-        for i in xrange(len(self.starData['type'])):
-            Ms = self.get_Ms_from_Teff(self.starData['Teff'][i])
+        for key in self.Teff.keys():
+            Ms = self.get_Ms_from_Teff(self.Teff[key])
             a = np.array(self.aData['range'])*getattr(u,self.aData['unit'])
             tmp_P = self.get_P_from_a(a,Ms)
-            tmp_dict[self.starData['type'][i]] = tmp_P.to('day').value
+            tmp_dict[key] = tmp_P.to('day').value
         self.PData['range'].update(tmp_dict)
         
     def get_Ms_from_Teff(self,Trange):
@@ -314,25 +314,25 @@ class EtaBase(object):
     def plot_allPRp(self):
         '''Plots occurrence rates for each spectral type with axes of Period 
         and Planetary Radius and saves them to plots/name folder'''
-        for onetype in self.starData['type']:
+        for onetype in self.Teff.keys():
             self.plot_onePRp(onetype)
     
     def plot_allaRp(self):
         '''Plots occurrence rates for each spectral type with axes of 
         Semi-Major Axis and Planetary Radius and saves them to plots/name'''
-        for onetype in self.starData['type']:
+        for onetype in self.Teff.keys():
             self.plot_oneaRp(onetype)
     
     def plot_allPM(self):
         '''Plots occurrence rates for each spectral type with axes of Period
         and Mass and saves them to plots/name'''
-        for onetype in self.starData['type']:
+        for onetype in self.Teff.keys():
             self.plot_onePM(onetype)
             
     def plot_allaM(self):
         '''Plots occurrence rates for each spectral type with axes of 
         Semi-Major Axis and Mass and saves them to plots/name'''
-        for onetype in self.starData['type']:
+        for onetype in self.Teff.keys():
             self.plot_oneaM(onetype)
 
     def plot_onePRp(self, typekey, saveplot=True):
