@@ -55,6 +55,7 @@ class EtaBase(object):
         self.PData = {}
         self.aData = {}
         self.Teff = {}
+        self.Mstar = {}
         self.Etas = {}
         self.fname = {}
         self.specs = specs
@@ -141,6 +142,10 @@ class EtaBase(object):
             self.Rp_to_M()
         if self.MsiniData['input']:
             self.M_to_Rp()
+        
+        # add Mstar data
+        for key in self.Teff.keys():
+            self.Mstar[key] = self.get_Ms_from_Teff(self.Teff[key]).to('M_sun').value
         
     def readfiles(self, fname, key):
         '''Reads in eta and sigma files and stores them in self.Etas'''
