@@ -13,13 +13,13 @@
   },
   "PData":{
     "range": [2,4080],
-    "input": false,
+    "input": true,
     "unit": "day",
     "scale": "log"
   },
   "aData":{
     "range": [],
-    "input": true,
+    "input": false,
     "unit": "AU",
     "scale": "log"
   },
