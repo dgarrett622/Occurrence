@@ -1,0 +1,35 @@
+{
+  "RpData":{
+  "range": [],
+  "input": false,
+  "unit": "earthRad",
+  "scale": "log"
+  },
+  "MsiniData":{
+    "range": [3,10,30,100,300,1000],
+    "input": true,
+    "unit": "M_earth",
+    "scale": "derived"
+  },
+  "PData":{
+    "range": [1,50],
+    "input": true,
+    "unit": "day",
+    "scale": "log"
+  },
+  "aData":{
+    "range": [],
+    "input": false,
+    "unit": "AU",
+    "scale": "derived"
+  },
+  "starData":{
+    "type": ["FGKM"],
+    "Teff": [[3870,6240]]
+  },
+  "fname": {
+  "name": "Mayor2011",
+  "title": "Mayor et al. (2011)",
+  "suffix": ".txt"
+  }
+}
