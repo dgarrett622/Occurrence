@@ -83,7 +83,7 @@ class EtaBase(object):
         
         # fill in Etas from file
         classpath = os.path.split(inspect.getfile(self.__class__))[0]
-        datafolderpath = os.path.join(classpath, self.fname['name'])
+        datafolderpath = os.path.join(classpath, 'Data', self.fname['name'])
         # filename for etas
         fEta = os.path.join(datafolderpath,'eta'+self.fname['suffix'])
         fsigp = os.path.join(datafolderpath,'sigma_p'+self.fname['suffix'])
