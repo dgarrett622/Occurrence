@@ -1,3 +1,0 @@
-0.24	0.50	NaN	NaN	
-0.04	NaN	NaN	NaN	
-NaN	0.03	NaN	0.05	
