@@ -37,13 +37,13 @@ def min_func(x,au=au,al=al,Ru=Ru,Rl=Rl,T=T,mu=mu,s=s):
     """
     model_args = tuple(x)
 #    model = simple_model(au,al,Ru,Rl,T,*model_args)
-    model = break_model(au,al,Ru,Rl,T,*model_args)
+    model = breakt3_model(au,al,Ru,Rl,T,*model_args)
     chi2 = ((mu-model)/s)**2
     f = np.sum(chi2)
     return f
 
 #x0 = [2.472,1.258,-0.617] # simple models
-x0 = [0.028,-0.638,1.104,1.005,-0.178,-0.879,2.766,-3.673,-2.645] # break models
+x0 = [-0.930,-0.223,1.063,1.007,-0.266,-1.019,2.606,-57.84,124.3,1716.,-0.235,-8.060,-80.94] # break models
 res = optimize.minimize(min_func,x0,args=args)
 print(res.x)
 print('chi-square: {}'.format(res.fun))

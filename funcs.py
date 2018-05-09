@@ -1688,12 +1688,12 @@ def grab_data(eta):
         s_tmp = 0.5*(sign+sigp)
         
         # TO REMOVE M STAR DATA, UNCOMMENT THIS!
-#        # only include Teff > 4000
-#        inds = np.where(Teff >= 4000)[0]
-#        M_tmp,au_tmp,al_tmp,Ru_tmp,Rl_tmp,Teff,etas,s_tmp = revise_data(M_tmp,au_tmp,al_tmp,Ru_tmp,Rl_tmp,Teff,etas,s_tmp,inds)
-#        sign = sign[inds]
-#        sigp = sigp[inds]
-#        s_tmp = 0.5*(sign+sigp)
+        # only include Teff > 4000
+        inds = np.where(Teff >= 4000)[0]
+        M_tmp,au_tmp,al_tmp,Ru_tmp,Rl_tmp,Teff,etas,s_tmp = revise_data(M_tmp,au_tmp,al_tmp,Ru_tmp,Rl_tmp,Teff,etas,s_tmp,inds)
+        sign = sign[inds]
+        sigp = sigp[inds]
+        s_tmp = 0.5*(sign+sigp)
 
         print('Final data for {} type {}: {}'.format(eta.fname['name'],key,len(etas)))
 
