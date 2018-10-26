@@ -1,7 +1,7 @@
 # Occurrence
 Collection of exoplanet occurrence rate data from [NASA's SAG 13](https://exoplanets.nasa.gov/exep/exopag/sag/#sag13) 
 effort and Python scripts fitting occurrence rate models including stellar effective temperature to this data. Details 
-of these models are contained in Garrett, Savransky, and Belikov (submitted). This work makes use of 
+of these models are contained in [Garrett et al. (2018)](https://doi.org/10.1088/1538-3873/aadff1). This work makes use of 
 [`emcee`](https://github.com/dfm/emcee), a Python implementation of the affine-invariant ensemble sampler for Markov 
 chain Monte Carlo (MCMC) proposed by [Goodman & Weare (2010)](http://dx.doi.org/10.2140/camcos.2010.5.65), written by
 [Dan Foreman-Mackey](https://dfm.io/).
